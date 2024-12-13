@@ -3,15 +3,27 @@ layout: post
 ---
 Including python test into Yocto aka `ptest` let you to add away to test the image you create using python test.
 
+## Execute test from Yocto host env 
+Test are located under
+`<you-layer>/lib/oeqa/runtime/cases/`
+and there are predefined test under:
+`poky/meta/lib/oeqa/runtime/cases/*`
 
-{% highlight ruby %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
-{% endhighlight %}
+```
+  enable_ptest_and_testimage: |
+    IMAGE_CLASSES += " testimage"
+    DISTRO_FEAURES:append = " ptest"
 
+    # tests you want to run
+    TEST_SUITES = " ping ssh python2 ptest"
+    
+    IMAGE_INSTALL:append = " ptest-runner"
+    TEST_TARGET = "simpleremote"
+    TEST_TARGET_IP = "192.168.1.100"
+    TEST_SERVER_IP = "192.168.1.103"
+```
+run them via the following command:
+`bitbake -c testimage <image>`
 
 ## References:
 - [2024 OSSE YoctoTesting][yocto-testing]
